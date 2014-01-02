@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<!--
+  Created using jsbin.com
+  Source can be edited via http://jsbin.com/idatubOs/12/edit
+-->
+<head>
+<meta name="description" content="Tool for quickly reviewing lists." />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+ 
+ 
+<meta charset=utf-8 />
+<title>Rapid Refresher</title>
+  
+
+<style id="jsbin-css">
+@import url(http://fonts.googleapis.com/css?family=Lora&subset=latin,latin-ext);
+
+#card { width:100%; margin:0px auto; text-align:center; height: 100%; position: absolute;  display:none;  overflow: visible;}
+#itemform {width: 100%; max-width:30rem; margin: 0px auto; padding-top: 3rem; color: #444;}
+#itemform textarea {  font-family: 'Lora', serif;
+width: 100%; height: 6rem;}
+#itemform button {  font-family: 'Lora', serif;
+font-size: 150%; margin: 0px auto;}
+body { background-image: url(http://subtlepatterns.com/patterns/sandpaper_@2X.png); }
+#credit {margin-top: 3rem;}
+#credit img {height: 50px; height: 2rem;}
+
+/* typebase */
+
+/*! Typebase.less v0.1.0 | MIT License */
+/* Setup */
+html {
+  /* Change default typefaces here */
+  font-family: 'Lora', serif;
+  font-size: 137.5%;
+  -webkit-font-smoothing: antialiased;
+}
+/* Copy & Lists */
+p {
+  line-height: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+}
+ul,
+ol {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+ul li,
+ol li {
+  line-height: 1.5rem;
+}
+ul ul,
+ol ul,
+ul ol,
+ol ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+blockquote {
+  line-height: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  /* Change heading typefaces here */
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  line-height: 1.5rem;
+}
+h1 {
+  font-size: 4.242rem;
+  line-height: 4.5rem;
+  margin-top: 3rem;
+}
+h2 {
+  font-size: 2.828rem;
+  line-height: 3rem;
+  margin-top: 3rem;
+}
+h3 {
+  font-size: 1.414rem;
+}
+h4 {
+  font-size: 0.707rem;
+}
+h5 {
+  font-size: 0.4713333333333333rem;
+}
+h6 {
+  font-size: 0.3535rem;
+}
+/* Tables */
+table {
+  margin-top: 1.5rem;
+  border-spacing: 0px;
+  border-collapse: collapse;
+}
+table td,
+table th {
+  padding: 0;
+  line-height: 33px;
+}
+/* Code blocks */
+code {
+  vertical-align: bottom;
+}
+/* Leading paragraph text */
+.lead {
+  font-size: 1.414rem;
+}
+/* Hug a the block above you */
+.hug {
+  margin-top: 0;
+}
+
+</style>
+</head>
+<body>
+  <div id="card"></div>
+  <div id="setup">
+  <form id="itemform">
+    <div class="fit">Rapid Refresher</div>
+
+    Use this tool to refresh yourself on long lists - stuff you know and just need a quick flash to keep top of mind, like Someday/Maybe reviews, a meeting wrap-up, or priming your mind with notes before a discussion.
+    <p>Copy and paste your list below to get started.
+  <textarea id="items">item one
+two
+the third and longest item on this list
+quick one</textarea>
+  <button id="review">Refresh Me!</button>
+      <div id="credit">Made by <a href="http://www.saintsal.com">SaintSal. <img src="https://dl.dropboxusercontent.com/u/6606104/www/saintsal/img/walky.svg"></a></div>
+  </form>
+  </div>
+<script>
+/*global jQuery */
+/*!
+* FitText.js 1.1
+*
+* Copyright 2011, Dave Rupert http://daverupert.com
+* Released under the WTFPL license
+* http://sam.zoy.org/wtfpl/
+*
+* Date: Thu May 05 14:23:00 2011 -0600
+*/
+
+(function( $ ){
+
+  $.fn.fitText = function( kompressor, options ) {
+
+    // Setup options
+    var compressor = kompressor || 1,
+        settings = $.extend({
+          'minFontSize' : Number.NEGATIVE_INFINITY,
+          'maxFontSize' : Number.POSITIVE_INFINITY
+        }, options);
+
+    return this.each(function(){
+
+      // Store the object
+      var $this = $(this);
+
+      // Resizer() resizes items based on the object width divided by the compressor * 10
+      var resizer = function () {
+        $this.css('font-size', Math.max(Math.min($this.width() / (compressor*10), parseFloat(settings.maxFontSize)), parseFloat(settings.minFontSize)));
+      };
+
+      // Call once to set.
+      resizer();
+
+      // Call on resize. Opera debounces their resize by default.
+      $(window).on('resize.fittext orientationchange.fittext', resizer);
+
+    });
+
+  };
+
+})( jQuery );
+
+/* Refresher code */
+
+$(function() {  
+  $(".fit").fitText();
+
+  $("#itemform").submit(function(event) {
+    event.preventDefault();
+  });
+
+  $('#review').click(function() {
+    var lines = $('#items').val().split("\n");
+    var x=1;
+
+    $('#setup').hide();    
+    $('#card').show(); 
+    
+    $.each(lines, function( index, value ) {
+      var timeout = 250;
+      timeout *= value.split(' ').length;
+      console.log(x, timeout, value);
+      window.setTimeout(function() {
+        $('#card').text(value);
+        $("#card").fitText();
+        console.log('changing text to '+value);
+      }, x);
+      x += timeout;
+    });
+
+    var timeout = 300;
+    window.setTimeout(function() {
+      $('#card').text('');
+      $('#card').hide(); 
+      $('#setup').show();    
+
+    }, x);
+  
+    console.log(x, timeout, 'sr');
+  });
+
+});
+</script>
+</body>
+</html>
