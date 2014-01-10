@@ -138,7 +138,7 @@ code {
 two
 the third and longest item on this list
 quick one</textarea>
-  <button id="review">Refresh Me!</button>
+  <button id="review">Refresh Me!</button> <span class="small">Reading speed (words per minute): <input class="small" value=350 id="readingspeed">
       <div id="credit">Made by <a href="http://www.saintsal.com/contact">SaintSal <img src="https://dl.dropboxusercontent.com/u/6606104/www/saintsal/img/walky.svg"></a>.<div class="small">Open source! <a href="https://github.com/saintsal/rapidrefresh">Improve this on github!</a><br>Background from <a href="http://www.subtlepatterns.com">subtlepatterns</a>.</a></div>
   </form>
   </div>
@@ -199,12 +199,14 @@ $(function() {
   $('#review').click(function() {
     var lines = $('#items').val().split("\n");
     var x=1;
+    var wordspeed = 60000/$('#readingspeed').val();
+    console.log(wordspeed+ " ms per word");
 
     $('#setup').hide();    
     $('#card').show(); 
     
     $.each(lines, function( index, value ) {
-      var timeout = 250;
+      var timeout = wordspeed;
       timeout *= value.split(' ').length;
       console.log(x, timeout, value);
       window.setTimeout(function() {
@@ -215,7 +217,7 @@ $(function() {
       x += timeout;
     });
 
-    var timeout = 300;
+    var timeout = wordspeed*1.2;
     window.setTimeout(function() {
       $('#card').text('');
       $('#card').hide(); 
